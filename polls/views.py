@@ -29,6 +29,52 @@ class ShoppingCart (View):
             }
             
             return JsonResponse(data, status=201)
-            
 
-# Create your views here.
+
+      def get(self, request):
+            items_count = CartItem.objects.count()
+            items = CartItem.objects.all()
+
+            items_data = []
+            for item in items:
+                  items_data.append({
+                        'product_name': item.product_name,
+                        'product_price': item.product_price,
+                        'product_quantity': item.product_quantity
+                  })
+
+            data = {
+                  'items': items_data,
+                  'count': items_count
+            }
+
+            return JsonResponse(data)
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ShoppingCartUpdate(View):
+      def patch(self, request, id):
+            data = json.loads(request.body.decode('utf-8'))
+            item = CartItem.objects.get(id=id)
+            item.product_quantity = data['product_quantity']
+            item.save()
+
+            data = {
+                  'message': f'Item {id} has been updated'
+            }
+
+            return JsonResponse(data)
+
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ShoppingCartDelete(View):
+      def delete(self, request, id):
+            item = CartItem.objects.get(id=id)
+            item.delete()
+
+            data = {
+                  'message': f'Item {id} has been deleted'
+            }
+
+            return JsonResponse(data)
