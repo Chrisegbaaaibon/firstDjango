@@ -1,0 +1,8 @@
+POST http://localhost:8000/cart-items/
+Content-Type: application/json
+
+{
+  "product_name": "MacBook",
+  "product_price": 2000,
+  "product_quantity": 42
+}
